@@ -14,6 +14,7 @@ class AggregatorModel {
       const tariffs = await db(this.tariffsTable)
         .select(`*`)
         .where(`district_id`, districtId);
+
       return tariffs;
     } catch (error) {
       throw new Error(
@@ -181,6 +182,54 @@ class AggregatorModel {
       throw new Error(
         `Ошибка при получении уникальных provider_id: ${error.message}`
       );
+    }
+  }
+  async getDistrictName(id) {
+    try {
+      const city = await db("districts")
+        .select("*")
+        .where("engname", id)
+        .first();
+      return city;
+    } catch (error) {
+      throw new Error(`Ошибка при получении города: ${error.message}`);
+    }
+  }
+
+  async getProvidersByEngName(engName) {
+    try {
+      const providers = await db("tariffs")
+        .select("provider_id")
+        .distinct()
+        .join("districts", "tariffs.district_id", "districts.id")
+        .where("districts.engname", engName);
+
+      return providers;
+    } catch (error) {
+      throw new Error(`Ошибка при получении города: ${error.message}`);
+    }
+  }
+  async getTariffsByEngName(engName) {
+    try {
+      const tariffs = await db("tariffs")
+        .select("tariffs.*")
+        .join("districts", "tariffs.district_id", "districts.id")
+        .where("districts.engname", engName);
+      return tariffs;
+    } catch (error) {
+      throw new Error(`Ошибка при получении города: ${error.message}`);
+    }
+  }
+
+  async getInfoDistrictByEngName(engName) {
+    try {
+      const city = await db("districts")
+        .select("*")
+        .where("engname", engName)
+        .first();
+      return city;
+    } catch (error) {
+      throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
 }

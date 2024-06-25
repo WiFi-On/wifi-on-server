@@ -23,6 +23,22 @@ class AggregatorService {
   async getFullInfoByHouse(id_house) {
     return this.aggregatorModel.getFullInfoByHouse(id_house);
   }
+
+  async getDistrictName(id) {
+    return this.aggregatorModel.getDistrictName(id);
+  }
+
+  async getTariffsByEngName(engName) {
+    return this.aggregatorModel.getTariffsByEngName(engName);
+  }
+
+  async getProvidersByEngName(engName) {
+    return this.aggregatorModel.getProvidersByEngName(engName);
+  }
+
+  async getInfoDistrictByEngName(engName) {
+    return this.aggregatorModel.getInfoDistrictByEngName(engName);
+  }
 }
 
 export default AggregatorService;
