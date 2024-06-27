@@ -39,6 +39,10 @@ class AggregatorService {
   async getInfoDistrictByEngName(engName) {
     return this.aggregatorModel.getInfoDistrictByEngName(engName);
   }
+
+  async getCityName(id) {
+    return this.aggregatorModel.getCityName(id);
+  }
 }
 
 export default AggregatorService;

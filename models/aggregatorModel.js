@@ -232,6 +232,19 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
+
+  async getCityName(id) {
+    try {
+      const city = await db("districts")
+        .select("engname")
+        .where("id", id)
+        .first();
+
+      return city.engname;
+    } catch (error) {
+      throw new Error(`Ошибка при получении города: ${error.message}`);
+    }
+  }
 }
 
 export default AggregatorModel;

@@ -24,6 +24,7 @@ const createRouter = (aggregatorController) => {
     "/fullInfoDistrictByEndName/:id",
     aggregatorController.getFullInfoDistrictByEndName
   );
+  router.get("/getCityName/:id", aggregatorController.getCityName);
 
   return router;
 };

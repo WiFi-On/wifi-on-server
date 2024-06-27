@@ -277,5 +277,14 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  getCityName = async (req, res) => {
+    try {
+      const cityName = await this.aggregatorService.getCityName(req.params.id);
+      res.status(200).json({ cityName });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
 export default AggregatorController;
