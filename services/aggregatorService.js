@@ -43,6 +43,10 @@ class AggregatorService {
   async getCityName(id) {
     return this.aggregatorModel.getCityName(id);
   }
+
+  async getTariff(id) {
+    return this.aggregatorModel.getTariff(id);
+  }
 }
 
 export default AggregatorService;

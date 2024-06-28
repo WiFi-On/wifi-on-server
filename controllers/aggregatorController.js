@@ -286,5 +286,84 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  getTariff = async (req, res) => {
+    try {
+      const tariff = await this.aggregatorService.getTariff(req.params.id);
+
+      tariff.provider = this.nameAndImageProviders[tariff.provider_id];
+
+      const cardparams = [];
+      if (tariff.internet_speed) {
+        cardparams.push({
+          img: "iconInternet.svg",
+          name: "Домашний интернет",
+          params: [
+            {
+              name: "Скорость",
+              value: `${tariff.internet_speed}`,
+              value_type: "Мбит/с",
+            },
+          ],
+        });
+      }
+      if (tariff.channels_count) {
+        cardparams.push({
+          img: "iconTv.svg",
+          name: "ТВ",
+          params: [
+            {
+              name: "Кол-во каналов",
+              value: `${tariff.channels_count}`,
+            },
+          ],
+        });
+      }
+      if (tariff.minutes) {
+        cardparams.push({
+          img: "iconMob.svg",
+          name: "Мобильная связь",
+          params: [
+            {
+              name: "Минуты",
+              value: `${tariff.minutes}`,
+              value_type: "Мин.",
+            },
+          ],
+        });
+      }
+      if (tariff.router_rent) {
+        cardparams.push({
+          img: "iconWifi.svg",
+          name: "Wi-Fi Роутер",
+          params: [
+            {
+              name: "В аренду",
+              value: `${tariff.router_rent}`,
+              value_type: "₽/мес.",
+            },
+          ],
+        });
+      }
+      if (tariff.tv_box_rent) {
+        cardparams.push({
+          img: "iconDecoder.svg",
+          name: "ТВ приставка",
+          params: [
+            {
+              name: "В аренду",
+              value: `${tariff.tv_box_rent}`,
+              value_type: "₽/мес.",
+            },
+          ],
+        });
+      }
+
+      tariff.cardparams = cardparams;
+      res.status(200).json({ tariff });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
 export default AggregatorController;

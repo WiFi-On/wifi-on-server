@@ -245,6 +245,16 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
+
+  async getTariff(id) {
+    try {
+      const tariff = await db("tariffs").select("*").where("id", id).first();
+      console.log(tariff);
+      return tariff;
+    } catch (error) {
+      throw new Error(`Ошибка при получении тарифа: ${error.message}`);
+    }
+  }
 }
 
 export default AggregatorModel;
