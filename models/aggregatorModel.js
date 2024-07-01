@@ -51,89 +51,6 @@ class AggregatorModel {
         .select("t.*")
         .where("h.id", houseId);
 
-      tariffs.forEach((tariff) => {
-        const nameAndImageProviders = {
-          1: { id: 1, name: "МТС", img: "mts.png" },
-          2: { id: 2, name: "Русская компания", img: "ruscom.png" },
-          3: { id: 3, name: "Билайн", img: "beeline.png" },
-          4: { id: 4, name: "Мегафон", img: "megafon.png" },
-          5: { id: 5, name: "Алматель", img: "almatel.png" },
-          6: { id: 6, name: "АБВ", img: "abv.png" },
-          7: { id: 7, name: "Ростелеком", img: "rtk.png" },
-          8: { id: 8, name: "Дом.ру", img: "domru.png" },
-          9: { id: 9, name: "Сибирский медведь", img: "sibMedved.png" },
-        };
-        tariff.provider = nameAndImageProviders[tariff.provider_id];
-
-        const cardparams = [];
-        if (tariff.internet_speed) {
-          cardparams.push({
-            img: "iconInternet.svg",
-            name: "Домашний интернет",
-            params: [
-              {
-                name: "Скорость",
-                value: `${tariff.internet_speed}`,
-                value_type: "Мбит/с",
-              },
-            ],
-          });
-        }
-        if (tariff.channels_count) {
-          cardparams.push({
-            img: "iconTv.svg",
-            name: "ТВ",
-            params: [
-              {
-                name: "Кол-во каналов",
-                value: `${tariff.channels_count}`,
-              },
-            ],
-          });
-        }
-        if (tariff.minutes) {
-          cardparams.push({
-            img: "iconMob.svg",
-            name: "Мобильная связь",
-            params: [
-              {
-                name: "Минуты",
-                value: `${tariff.minutes}`,
-                value_type: "Мин.",
-              },
-            ],
-          });
-        }
-        if (tariff.router_rent) {
-          cardparams.push({
-            img: "iconWifi.svg",
-            name: "Wi-Fi Роутер",
-            params: [
-              {
-                name: "В аренду",
-                value: `${tariff.router_rent}`,
-                value_type: "₽/мес.",
-              },
-            ],
-          });
-        }
-        if (tariff.tv_box_rent) {
-          cardparams.push({
-            img: "iconDecoder.svg",
-            name: "ТВ приставка",
-            params: [
-              {
-                name: "В аренду",
-                value: `${tariff.tv_box_rent}`,
-                value_type: "₽/мес.",
-              },
-            ],
-          });
-        }
-
-        tariff.cardparams = cardparams;
-      });
-
       return tariffs;
     } catch (error) {
       throw new Error(`Ошибка при получении тарифов по дому: ${error.message}`);
@@ -251,6 +168,18 @@ class AggregatorModel {
       const tariff = await db("tariffs").select("*").where("id", id).first();
       console.log(tariff);
       return tariff;
+    } catch (error) {
+      throw new Error(`Ошибка при получении тарифа: ${error.message}`);
+    }
+  }
+
+  async getTariffsByDistrictAndProvider(districtId, providerId) {
+    try {
+      const tariffs = await db("tariffs")
+        .select("*")
+        .where("district_id", districtId)
+        .where("provider_id", providerId);
+      return tariffs;
     } catch (error) {
       throw new Error(`Ошибка при получении тарифа: ${error.message}`);
     }

@@ -47,6 +47,13 @@ class AggregatorService {
   async getTariff(id) {
     return this.aggregatorModel.getTariff(id);
   }
+
+  async getTariffsByDistrictAndProvider(districtId, providerId) {
+    return this.aggregatorModel.getTariffsByDistrictAndProvider(
+      districtId,
+      providerId
+    );
+  }
 }
 
 export default AggregatorService;
