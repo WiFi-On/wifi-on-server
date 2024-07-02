@@ -22,7 +22,6 @@ class AggregatorModel {
       );
     }
   }
-
   async getProvidersByDistrictId(districtId) {
     try {
       const providers = await db(this.tariffsTable)
@@ -36,7 +35,6 @@ class AggregatorModel {
       );
     }
   }
-
   async getTariffsByHouse(houseId) {
     try {
       const tariffs = await db("streets as h")
@@ -112,7 +110,6 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
-
   async getProvidersByEngName(engName) {
     try {
       const providers = await db("tariffs")
@@ -137,7 +134,6 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
-
   async getInfoDistrictByEngName(engName) {
     try {
       const city = await db("districts")
@@ -149,7 +145,6 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
-
   async getCityName(id) {
     try {
       const city = await db("districts")
@@ -162,7 +157,6 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении города: ${error.message}`);
     }
   }
-
   async getTariff(id) {
     try {
       const tariff = await db("tariffs").select("*").where("id", id).first();
@@ -172,7 +166,6 @@ class AggregatorModel {
       throw new Error(`Ошибка при получении тарифа: ${error.message}`);
     }
   }
-
   async getTariffsByDistrictAndProvider(districtId, providerId) {
     try {
       const tariffs = await db("tariffs")
