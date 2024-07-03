@@ -3,15 +3,15 @@ class AggregatorController {
   constructor(aggregatorService) {
     this.aggregatorService = aggregatorService;
     this.nameAndImageProviders = {
-      1: { id: 1, name: "МТС", img: "mts.png" },
-      2: { id: 2, name: "Русская компания", img: "ruscom.png" },
-      3: { id: 3, name: "Билайн", img: "beeline.png" },
-      4: { id: 4, name: "Мегафон", img: "megafon.png" },
-      5: { id: 5, name: "Алматель", img: "almatel.png" },
-      6: { id: 6, name: "АБВ", img: "abv.png" },
-      7: { id: 7, name: "Ростелеком", img: "rtk.png" },
-      8: { id: 8, name: "Дом.ру", img: "domru.png" },
-      9: { id: 9, name: "Сибирский медведь", img: "sibMedved.png" },
+      1: { id: 1, name: "МТС", img: "mts.svg" },
+      2: { id: 2, name: "Русская компания", img: "ruscom.svg" },
+      3: { id: 3, name: "Билайн", img: "beeline.svg" },
+      4: { id: 4, name: "Мегафон", img: "megafon.svg" },
+      5: { id: 5, name: "Алматель", img: "almatel.svg" },
+      6: { id: 6, name: "АБВ", img: "abv.svg" },
+      7: { id: 7, name: "Ростелеком", img: "rtk.svg" },
+      8: { id: 8, name: "Дом.ру", img: "domru.svg" },
+      9: { id: 9, name: "Сибирский медведь", img: "sibMedved.svg" },
     };
   }
 
@@ -80,15 +80,15 @@ class AggregatorController {
 
       tariffs.forEach((tariff) => {
         const nameAndImageProviders = {
-          1: { id: 1, name: "МТС", img: "mts.png" },
-          2: { id: 2, name: "Русская компания", img: "ruscom.png" },
-          3: { id: 3, name: "Билайн", img: "beeline.png" },
-          4: { id: 4, name: "Мегафон", img: "megafon.png" },
-          5: { id: 5, name: "Алматель", img: "almatel.png" },
-          6: { id: 6, name: "АБВ", img: "abv.png" },
-          7: { id: 7, name: "Ростелеком", img: "rtk.png" },
-          8: { id: 8, name: "Дом.ру", img: "domru.png" },
-          9: { id: 9, name: "Сибирский медведь", img: "sibMedved.png" },
+          1: { id: 1, name: "МТС", img: "mts.svg" },
+          2: { id: 2, name: "Русская компания", img: "ruscom.svg" },
+          3: { id: 3, name: "Билайн", img: "beeline.svg" },
+          4: { id: 4, name: "Мегафон", img: "megafon.svg" },
+          5: { id: 5, name: "Алматель", img: "almatel.svg" },
+          6: { id: 6, name: "АБВ", img: "abv.svg" },
+          7: { id: 7, name: "Ростелеком", img: "rtk.svg" },
+          8: { id: 8, name: "Дом.ру", img: "domru.svg" },
+          9: { id: 9, name: "Сибирский медведь", img: "sibMedved.svg" },
         };
         tariff.provider = nameAndImageProviders[tariff.provider_id];
 
@@ -282,11 +282,16 @@ class AggregatorController {
           7200000100000,
           7
         );
-      const districtName =
-        await this.aggregatorService.getInfoDistrictByEngName(req.params.id);
       const providers = await this.aggregatorService.getProvidersByEngName(
         req.params.id
       );
+      const districtName =
+        await this.aggregatorService.getInfoDistrictByEngName(req.params.id);
+      console.log(providers);
+      if (!tariffs.some((tariff) => tariff.provider_id === 7)) {
+        tariffs = tariffs.concat(tariffsRtk);
+        providers.push({ provider_id: 7 });
+      }
 
       tariffs.forEach((tariff) => {
         tariff.provider = this.nameAndImageProviders[tariff.provider_id];
@@ -367,12 +372,6 @@ class AggregatorController {
           resultProviders.push(this.nameAndImageProviders[providerId]);
         }
       });
-
-      if (!tariffs.some((tariff) => tariff.provider_id === 7)) {
-        providers.push(this.nameAndImageProviders[7]);
-        tariffs = tariffs.concat(tariffsRtk);
-      }
-
       res
         .status(200)
         .json({ districtName, tariffs, providers: resultProviders });
