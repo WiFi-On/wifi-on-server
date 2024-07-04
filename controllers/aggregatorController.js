@@ -508,7 +508,7 @@ class AggregatorController {
       }
 
       // Отправляем имя города в ответ
-      res.status(200).json({ city: cityName });
+      res.status(200).json({ city: cityData });
     } catch (error) {
       console.error("Error:", error.message);
       res.status(500).json({
