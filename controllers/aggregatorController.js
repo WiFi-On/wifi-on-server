@@ -502,7 +502,7 @@ class AggregatorController {
 
       const cityData = await this.aggregatorService.getCityName(cityKladrId);
       const cityName = cityData["engname"];
-
+      console.log(cityData, cityName);
       // Проверяем, получили ли мы корректные данные
       if (!cityData || !cityName) {
         throw new Error("Invalid data received from local API");
