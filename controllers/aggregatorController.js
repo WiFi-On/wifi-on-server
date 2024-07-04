@@ -500,7 +500,7 @@ class AggregatorController {
 
       const cityKladrId = dadataData.location.data.city_kladr_id;
 
-      const cityData = await aggregatorService.getCityName(cityKladrId);
+      const cityData = await this.aggregatorService.getCityName(cityKladrId);
       const cityName = cityData["engname"];
 
       // Проверяем, получили ли мы корректные данные
