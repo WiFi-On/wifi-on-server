@@ -2,6 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import connectDB from "./config/db.js";
+import connectDBv2 from "./config/dbV2.js";
 import AggregatorModel from "./models/aggregatorModel.js";
 import AggregatorService from "./services/aggregatorService.js";
 import AggregatorController from "./controllers/aggregatorController.js";
@@ -11,6 +12,7 @@ import aggregatorRoutesV2 from "./routes/aggregatorRoutesV2.js";
 import cors from "cors";
 
 const db = connectDB();
+const dbV2 = connectDBv2();
 
 const aggregatorModel = new AggregatorModel();
 const aggregatorService = new AggregatorService(aggregatorModel);
@@ -27,5 +29,5 @@ app.use(cors());
 app.use("/api", aggregatorRoutes(aggregatorController));
 app.use("/api/v2", aggregatorRoutesV2(aggregatorControllerV2));
 
-const port = process.env.PORT || 5040;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

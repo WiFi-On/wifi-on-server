@@ -6,7 +6,7 @@ const createRouter = (aggregatorControllerV2) => {
 
   router.get(
     "/providersOnAddress/:address",
-    aggregatorControllerV2.getTariffsByDistrictId
+    aggregatorControllerV2.getProvidersOnAddress
   );
 
   return router;

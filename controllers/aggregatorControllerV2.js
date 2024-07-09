@@ -3,7 +3,7 @@ class AggregatorControllerV2 {
     this.aggregatorServiceV2 = aggregatorServiceV2;
   }
 
-  async getProvidersOnStreet(req, res) {
+  async getProvidersOnAddress(req, res) {
     try {
       const providers = await this.aggregatorServiceV2.getProvidersOnAddress(
         req.params.address
