@@ -3,16 +3,17 @@ class AggregatorController {
   constructor(aggregatorService) {
     this.aggregatorService = aggregatorService;
     this.nameAndImageProviders = {
-      1: { id: 1, name: "МТС", img: "mts.png" },
-      2: { id: 2, name: "Русская компания", img: "ruscom.png" },
-      3: { id: 3, name: "Билайн", img: "beeline.png" },
-      4: { id: 4, name: "Мегафон", img: "megafon.png" },
-      5: { id: 5, name: "Алматель", img: "almatel.png" },
-      6: { id: 6, name: "АБВ", img: "abv.png" },
-      7: { id: 7, name: "Ростелеком", img: "rtk.png" },
-      8: { id: 8, name: "Дом.ру", img: "domru.png" },
-      9: { id: 9, name: "Сибирский медведь", img: "sibMedved.png" },
+      1: { id: 1, name: "МТС", img: "mts.svg" },
+      2: { id: 2, name: "Русская компания", img: "ruscom.svg" },
+      3: { id: 3, name: "Билайн", img: "beeline.svg" },
+      4: { id: 4, name: "Мегафон", img: "megafon.svg" },
+      5: { id: 5, name: "Алматель", img: "almatel.svg" },
+      6: { id: 6, name: "АБВ", img: "abv.svg" },
+      7: { id: 7, name: "Ростелеком", img: "rtk.svg" },
+      8: { id: 8, name: "Дом.ру", img: "domru.svg" },
+      9: { id: 9, name: "Сибирский медведь", img: "sibMedved.svg" },
     };
+    this.apiKeyDadata = "bbbdb08051ba3df93014d80a721660db6c19f0db";
   }
 
   getTariffsByDistrictId = async (req, res) => {
@@ -80,15 +81,15 @@ class AggregatorController {
 
       tariffs.forEach((tariff) => {
         const nameAndImageProviders = {
-          1: { id: 1, name: "МТС", img: "mts.png" },
-          2: { id: 2, name: "Русская компания", img: "ruscom.png" },
-          3: { id: 3, name: "Билайн", img: "beeline.png" },
-          4: { id: 4, name: "Мегафон", img: "megafon.png" },
-          5: { id: 5, name: "Алматель", img: "almatel.png" },
-          6: { id: 6, name: "АБВ", img: "abv.png" },
-          7: { id: 7, name: "Ростелеком", img: "rtk.png" },
-          8: { id: 8, name: "Дом.ру", img: "domru.png" },
-          9: { id: 9, name: "Сибирский медведь", img: "sibMedved.png" },
+          1: { id: 1, name: "МТС", img: "mts.svg" },
+          2: { id: 2, name: "Русская компания", img: "ruscom.svg" },
+          3: { id: 3, name: "Билайн", img: "beeline.svg" },
+          4: { id: 4, name: "Мегафон", img: "megafon.svg" },
+          5: { id: 5, name: "Алматель", img: "almatel.svg" },
+          6: { id: 6, name: "АБВ", img: "abv.svg" },
+          7: { id: 7, name: "Ростелеком", img: "rtk.svg" },
+          8: { id: 8, name: "Дом.ру", img: "domru.svg" },
+          9: { id: 9, name: "Сибирский медведь", img: "sibMedved.svg" },
         };
         tariff.provider = nameAndImageProviders[tariff.provider_id];
 
@@ -282,11 +283,16 @@ class AggregatorController {
           7200000100000,
           7
         );
-      const districtName =
-        await this.aggregatorService.getInfoDistrictByEngName(req.params.id);
       const providers = await this.aggregatorService.getProvidersByEngName(
         req.params.id
       );
+      const districtName =
+        await this.aggregatorService.getInfoDistrictByEngName(req.params.id);
+      console.log(providers);
+      if (!tariffs.some((tariff) => tariff.provider_id === 7)) {
+        tariffs = tariffs.concat(tariffsRtk);
+        providers.push({ provider_id: 7 });
+      }
 
       tariffs.forEach((tariff) => {
         tariff.provider = this.nameAndImageProviders[tariff.provider_id];
@@ -367,12 +373,6 @@ class AggregatorController {
           resultProviders.push(this.nameAndImageProviders[providerId]);
         }
       });
-
-      if (!tariffs.some((tariff) => tariff.provider_id === 7)) {
-        providers.push(this.nameAndImageProviders[7]);
-        tariffs = tariffs.concat(tariffsRtk);
-      }
-
       res
         .status(200)
         .json({ districtName, tariffs, providers: resultProviders });
@@ -466,6 +466,55 @@ class AggregatorController {
       res.status(200).json({ tariff });
     } catch (error) {
       res.status(500).json({ error: error.message });
+    }
+  };
+
+  getIpAndCity = async (req, res) => {
+    const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    console.log(ip);
+    try {
+      // Запрос к DaData для получения информации о местоположении по IP
+      const dadataResponse = await fetch(
+        "http://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Token ${this.apiKeyDadata}`,
+          },
+          body: JSON.stringify({ ip: ip }),
+        }
+      );
+
+      if (!dadataResponse.ok) {
+        throw new Error(`DaData API error: ${dadataResponse.statusText}`);
+      }
+
+      const dadataData = await dadataResponse.json();
+      console.log(dadataData);
+      // Проверяем, получили ли мы корректные данные
+      if (!dadataData || !dadataData.location || !dadataData.location.data) {
+        throw new Error("Invalid data received from DaData");
+      }
+
+      const cityKladrId = dadataData.location.data.city_kladr_id;
+
+      const cityData = await this.aggregatorService.getCityName(cityKladrId);
+
+      // Проверяем, получили ли мы корректные данные
+      if (!cityData) {
+        throw new Error("Invalid data received from local API");
+      }
+
+      // Отправляем имя города в ответ
+      res.status(200).json({ city: cityData });
+    } catch (error) {
+      console.error("Error:", error.message);
+      res.status(500).json({
+        error: "Failed to fetch data",
+        details: error.message,
+      });
     }
   };
 }

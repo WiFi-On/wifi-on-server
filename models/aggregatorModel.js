@@ -56,15 +56,15 @@ class AggregatorModel {
   }
   async getProvidersByHouse(houseId) {
     const nameAndImageProviders = {
-      1: { id: 1, name: "МТС", img: "mts.png" },
-      2: { id: 2, name: "Русская компания", img: "ruscom.png" },
-      3: { id: 3, name: "Билайн", img: "beeline.png" },
-      4: { id: 4, name: "Мегафон", img: "megafon.png" },
-      5: { id: 5, name: "Алматель", img: "almatel.png" },
-      6: { id: 6, name: "АБВ", img: "abv.png" },
-      7: { id: 7, name: "Ростелеком", img: "rtk.png" },
-      8: { id: 8, name: "Дом.ру", img: "domru.png" },
-      9: { id: 9, name: "Сибирский медведь", img: "sibMedved.png" },
+      1: { id: 1, name: "МТС", img: "mts.svg" },
+      2: { id: 2, name: "Русская компания", img: "ruscom.svg" },
+      3: { id: 3, name: "Билайн", img: "beeline.svg" },
+      4: { id: 4, name: "Мегафон", img: "megafon.svg" },
+      5: { id: 5, name: "Алматель", img: "almatel.svg" },
+      6: { id: 6, name: "АБВ", img: "abv.svg" },
+      7: { id: 7, name: "Ростелеком", img: "rtk.svg" },
+      8: { id: 8, name: "Дом.ру", img: "domru.svg" },
+      9: { id: 9, name: "Сибирский медведь", img: "sibMedved.svg" },
     };
     const result = [];
 

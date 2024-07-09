@@ -26,7 +26,7 @@ const createRouter = (aggregatorController) => {
   );
   router.get("/getCityName/:id", aggregatorController.getCityName);
   router.get("/getTariff/:id", aggregatorController.getTariff);
-
+  router.get("/getIpAndCity", aggregatorController.getIpAndCity);
   return router;
 };
 
