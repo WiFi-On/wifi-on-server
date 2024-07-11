@@ -4,11 +4,49 @@ import crypto from "crypto";
 class AggregatorService {
   constructor(aggregatorModel) {
     this.aggregatorModel = aggregatorModel;
+    this.apiKeyDadata = "71378de14318d10009285e018aedbfe5a353bb5a";
   }
 
   async hashAddress(address) {
     const hash = crypto.createHash("md5").update(address).digest("hex");
     return hash;
+  }
+  async getIpFromData(ip) {
+    try {
+      const dadataResponse = await fetch(
+        "http://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Token ${this.apiKeyDadata}`,
+          },
+          body: JSON.stringify({ ip: ip }),
+        }
+      );
+
+      if (!dadataResponse.ok) {
+        throw new Error(`DaData API error: ${dadataResponse.statusText}`);
+      }
+
+      const dadataData = await dadataResponse.json();
+      console.log(dadataData);
+      // Проверяем, получили ли мы корректные данные
+      if (!dadataData || !dadataData.location || !dadataData.location.data) {
+        throw new Error("Invalid data received from DaData");
+      }
+
+      const cityFiasId = dadataData.location.data.city_fias_id;
+
+      return cityFiasId;
+    } catch (error) {
+      console.error("Error:", error.message);
+      return {
+        error: "Failed to fetch data",
+        details: error.message,
+      };
+    }
   }
 
   async getProvidersOnAddress(address) {
@@ -18,6 +56,42 @@ class AggregatorService {
     );
     const arrProvidersId = providers.map((item) => item.provider_id);
     return arrProvidersId;
+  }
+
+  async getIpAndCity(ip) {
+    const ipFromData = await this.getIpFromData(ip);
+    const cityData = await this.aggregatorModel.getIpAndCity(ipFromData);
+
+    return cityData;
+  }
+
+  async getDistrictInfoByEngName(engName) {
+    const districtData = await this.aggregatorModel.getDistrictInfoByEngName(
+      engName
+    );
+    return districtData;
+  }
+
+  async getTariffsByDistrictEngName(engName) {
+    const fiasDistrictId =
+      await this.aggregatorModel.getDistrictFiasIdByEngName(engName);
+
+    const tariffs = await this.aggregatorModel.getTariffsByDistrictFiasId(
+      fiasDistrictId[0].id
+    );
+
+    return tariffs;
+  }
+
+  async getProvidersByDistrictEngName(engName) {
+    const fiasDistrictId =
+      await this.aggregatorModel.getDistrictFiasIdByEngName(engName);
+    let providers = await this.aggregatorModel.getProvidersByDistrictFiasId(
+      fiasDistrictId[0].id
+    );
+
+    providers = providers.map((item) => item.provider_id);
+    return providers;
   }
 
   // Старые методы

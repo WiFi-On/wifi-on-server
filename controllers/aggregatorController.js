@@ -15,6 +15,86 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  getIpAndCity = async (req, res) => {
+    const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    try {
+      const ipAndCity = await this.aggregatorService.getIpAndCity(ip);
+      res.status(200).json({ engName: ipAndCity });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  getFullInfoDistrictByEndName = async (req, res) => {
+    try {
+      const fullInfoDistrict =
+        await this.aggregatorService.getDistrictInfoByEngName(
+          req.params.engNameDistrict
+        );
+      const tariffs = await this.aggregatorService.getTariffsByDistrictEngName(
+        req.params.engNameDistrict
+      );
+      const providers =
+        await this.aggregatorService.getProvidersByDistrictEngName(
+          req.params.engNameDistrict
+        );
+      res.status(200).json({
+        infoDistrict: fullInfoDistrict,
+        tariffs: tariffs,
+        providers: providers,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  // getIpAndCity = async (req, res) => {
+  //   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  //   console.log(ip);
+  //   try {
+  //     // Запрос к DaData для получения информации о местоположении по IP
+  //     const dadataResponse = await fetch(
+  //       "http://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Accept: "application/json",
+  //           Authorization: `Token ${this.apiKeyDadata}`,
+  //         },
+  //         body: JSON.stringify({ ip: ip }),
+  //       }
+  //     );
+
+  //     if (!dadataResponse.ok) {
+  //       throw new Error(`DaData API error: ${dadataResponse.statusText}`);
+  //     }
+
+  //     const dadataData = await dadataResponse.json();
+  //     console.log(dadataData);
+  //     // Проверяем, получили ли мы корректные данные
+  //     if (!dadataData || !dadataData.location || !dadataData.location.data) {
+  //       throw new Error("Invalid data received from DaData");
+  //     }
+
+  //     const cityKladrId = dadataData.location.data.city_kladr_id;
+
+  //     const cityData = await this.aggregatorService.getCityName(cityKladrId);
+
+  //     // Проверяем, получили ли мы корректные данные
+  //     if (!cityData) {
+  //       throw new Error("Invalid data received from local API");
+  //     }
+
+  //     // Отправляем имя города в ответ
+  //     res.status(200).json({ city: cityData });
+  //   } catch (error) {
+  //     console.error("Error:", error.message);
+  //     res.status(500).json({
+  //       error: "Failed to fetch data",
+  //       details: error.message,
+  //     });
+  //   }
+  // };
   // Старые контроллеры
   // getTariffsByDistrictId = async (req, res) => {
   //   try {
@@ -457,54 +537,6 @@ class AggregatorController {
   //     res.status(200).json({ tariff });
   //   } catch (error) {
   //     res.status(500).json({ error: error.message });
-  //   }
-  // };
-  // getIpAndCity = async (req, res) => {
-  //   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-  //   console.log(ip);
-  //   try {
-  //     // Запрос к DaData для получения информации о местоположении по IP
-  //     const dadataResponse = await fetch(
-  //       "http://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Accept: "application/json",
-  //           Authorization: `Token ${this.apiKeyDadata}`,
-  //         },
-  //         body: JSON.stringify({ ip: ip }),
-  //       }
-  //     );
-
-  //     if (!dadataResponse.ok) {
-  //       throw new Error(`DaData API error: ${dadataResponse.statusText}`);
-  //     }
-
-  //     const dadataData = await dadataResponse.json();
-  //     console.log(dadataData);
-  //     // Проверяем, получили ли мы корректные данные
-  //     if (!dadataData || !dadataData.location || !dadataData.location.data) {
-  //       throw new Error("Invalid data received from DaData");
-  //     }
-
-  //     const cityKladrId = dadataData.location.data.city_kladr_id;
-
-  //     const cityData = await this.aggregatorService.getCityName(cityKladrId);
-
-  //     // Проверяем, получили ли мы корректные данные
-  //     if (!cityData) {
-  //       throw new Error("Invalid data received from local API");
-  //     }
-
-  //     // Отправляем имя города в ответ
-  //     res.status(200).json({ city: cityData });
-  //   } catch (error) {
-  //     console.error("Error:", error.message);
-  //     res.status(500).json({
-  //       error: "Failed to fetch data",
-  //       details: error.message,
-  //     });
   //   }
   // };
 }

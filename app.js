@@ -23,5 +23,5 @@ app.use(cors());
 // Routes
 app.use("/api/v1", aggregatorRoutes(aggregatorController));
 
-const port = process.env.PORT || 5014;
+const port = process.env.PORT || 5015;
 app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

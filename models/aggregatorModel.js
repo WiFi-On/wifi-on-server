@@ -22,6 +22,61 @@ class AggregatorModel {
     }
   }
 
+  async getIpAndCity(district_fias_id) {
+    try {
+      const infoDistrict = await db(this.districtsTable)
+        .select("engname")
+        .where("fias_id", district_fias_id);
+      return infoDistrict;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getDistrictInfoByEngName(engName) {
+    try {
+      const infoDistrict = await db(this.districtsTable)
+        .select("name", "namewhere")
+        .where("engname", engName);
+      return infoDistrict;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getTariffsByDistrictFiasId(districtFiasId) {
+    try {
+      const tariffs = await db(this.tariffsTable)
+        .select("*")
+        .where("district_id", districtFiasId);
+
+      return tariffs;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getDistrictFiasIdByEngName(engName) {
+    try {
+      const fiasIdDistrict = await db(this.districtsTable)
+        .select("id")
+        .where("engname", engName);
+      return fiasIdDistrict;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getProvidersByDistrictFiasId(districtFiasId) {
+    try {
+      const providers = await db(this.tariffsTable)
+        .distinct("provider_id")
+        .where("district_id", districtFiasId);
+      return providers;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
   // Старые методы
   // async getTariffsByDistrictId(districtId) {
   //   try {

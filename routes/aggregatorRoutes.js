@@ -10,6 +10,12 @@ const createRouter = (aggregatorController) => {
     aggregatorController.getProvidersOnAddress
   );
 
+  router.get("/ipAndCity", aggregatorController.getIpAndCity);
+  router.get(
+    "/fullInfoDistrictByEndName/:engNameDistrict",
+    aggregatorController.getFullInfoDistrictByEndName
+  );
+
   // Старые пути
   // router.get(
   //   "/tariffsByDistrict/:id",
