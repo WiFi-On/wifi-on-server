@@ -77,6 +77,56 @@ class AggregatorModel {
       throw new Error(error.message);
     }
   }
+
+  async getTariffsOnAddress(hashAddress) {
+    console.log(hashAddress);
+    try {
+      const tariffs = await db("tariffs as t")
+        .select("t.*")
+        .join("streets as s", "t.district_id", "s.districtid")
+        .join("providersonstreet as ps", "ps.street_id", "s.id")
+        .join("technologiesonstreet as ts", "ts.street_id", "s.id")
+        .where("s.id", hashAddress)
+        .andWhere(function () {
+          this.where("ps.provider_id", db.raw("t.provider_id")).andWhere(
+            function () {
+              this.where(
+                db.raw("ts.xdsl AND (t.technologies->>'xdsl')::boolean")
+              )
+                .orWhere(
+                  db.raw("ts.fttx AND (t.technologies->>'fftx')::boolean")
+                )
+                .orWhere(db.raw("ts.pon AND (t.technologies->>'pon')::boolean"))
+                .orWhere(
+                  db.raw("ts.pstn AND (t.technologies->>'pstn')::boolean")
+                )
+                .orWhere(db.raw("ts.wba AND (t.technologies->>'wba')::boolean"))
+                .orWhere(
+                  db.raw("ts.docsis AND (t.technologies->>'docsis')::boolean")
+                )
+                .orWhere(
+                  db.raw("ts.unknown AND (t.technologies->>'unknown')::boolean")
+                );
+            }
+          );
+        });
+      console.log(tariffs);
+      return tariffs;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getTariff(tariffId) {
+    try {
+      const tariff = await db(this.tariffsTable)
+        .select("*")
+        .where("id", tariffId);
+      return tariff;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
   // Старые методы
   // async getTariffsByDistrictId(districtId) {
   //   try {

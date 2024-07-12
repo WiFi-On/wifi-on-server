@@ -5,12 +5,18 @@ class AggregatorService {
   constructor(aggregatorModel) {
     this.aggregatorModel = aggregatorModel;
     this.apiKeyDadata = "71378de14318d10009285e018aedbfe5a353bb5a";
+    this.providerNameById = {
+      1: "Русская компания",
+      2: "МТС",
+      3: "МегаФон",
+    };
   }
 
   async hashAddress(address) {
     const hash = crypto.createHash("md5").update(address).digest("hex");
     return hash;
   }
+
   async getIpFromData(ip) {
     try {
       const dadataResponse = await fetch(
@@ -54,8 +60,27 @@ class AggregatorService {
     const providers = await this.aggregatorModel.getProvidersOnAddress(
       hashAddress
     );
-    const arrProvidersId = providers.map((item) => item.provider_id);
-    return arrProvidersId;
+    const resultProviders = providers.map((provider) => ({
+      id: provider.provider_id,
+      name: this.providerNameById[provider.provider_id],
+    }));
+    return resultProviders;
+  }
+
+  async getTariffsOnAddress(address) {
+    const hashAddress = await this.hashAddress(address);
+    const tariffs = await this.aggregatorModel.getTariffsOnAddress(hashAddress);
+    const resultTariffs = tariffs.map((tariff) => {
+      const { provider_id, ...rest } = tariff;
+      return {
+        ...rest,
+        provider: {
+          id: provider_id,
+          name: this.providerNameById[provider_id],
+        },
+      };
+    });
+    return resultTariffs;
   }
 
   async getIpAndCity(ip) {
@@ -69,7 +94,8 @@ class AggregatorService {
     const districtData = await this.aggregatorModel.getDistrictInfoByEngName(
       engName
     );
-    return districtData;
+    const resultDistrictData = districtData[0];
+    return resultDistrictData;
   }
 
   async getTariffsByDistrictEngName(engName) {
@@ -79,21 +105,44 @@ class AggregatorService {
     const tariffs = await this.aggregatorModel.getTariffsByDistrictFiasId(
       fiasDistrictId[0].id
     );
-
-    return tariffs;
+    const resultTariffs = tariffs.map((tariff) => {
+      const { provider_id, ...rest } = tariff;
+      return {
+        ...rest,
+        provider: {
+          id: provider_id,
+          name: this.providerNameById[provider_id],
+        },
+      };
+    });
+    return resultTariffs;
   }
 
   async getProvidersByDistrictEngName(engName) {
     const fiasDistrictId =
       await this.aggregatorModel.getDistrictFiasIdByEngName(engName);
-    let providers = await this.aggregatorModel.getProvidersByDistrictFiasId(
+    const providers = await this.aggregatorModel.getProvidersByDistrictFiasId(
       fiasDistrictId[0].id
     );
 
-    providers = providers.map((item) => item.provider_id);
-    return providers;
+    const resultProviders = providers.map((provider) => ({
+      id: provider.provider_id,
+      name: this.providerNameById[provider.provider_id],
+    }));
+    return resultProviders;
   }
 
+  async getTariff(id) {
+    const [tariff] = await this.aggregatorModel.getTariff(id);
+    const { provider_id, ...rest } = tariff;
+    return {
+      ...rest,
+      provider: {
+        id: provider_id,
+        name: this.providerNameById[provider_id],
+      },
+    };
+  }
   // Старые методы
   // async getTariffsByDistrictId(id_district) {
   //   return this.aggregatorModel.getTariffsByDistrictId(id_district);

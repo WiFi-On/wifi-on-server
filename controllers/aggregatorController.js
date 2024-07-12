@@ -15,7 +15,16 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
-
+  getTariffsOnAddress = async (req, res) => {
+    try {
+      const tariffs = await this.aggregatorService.getTariffsOnAddress(
+        req.params.address
+      );
+      res.status(200).json({ tariffs: tariffs });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
   getIpAndCity = async (req, res) => {
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     try {
@@ -47,6 +56,15 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
+  getTariff = async (req, res) => {
+    try {
+      const tariff = await this.aggregatorService.getTariff(req.params.id);
+      res.status(200).json({ tariff: tariff });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   // getIpAndCity = async (req, res) => {
   //   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   //   console.log(ip);
