@@ -40,13 +40,17 @@ class AggregatorController {
         await this.aggregatorService.getDistrictInfoByEngName(
           req.params.engNameDistrict
         );
+      console.log(fullInfoDistrict);
       const tariffs = await this.aggregatorService.getTariffsByDistrictEngName(
         req.params.engNameDistrict
       );
+      console.log(tariffs);
       const providers =
         await this.aggregatorService.getProvidersByDistrictEngName(
           req.params.engNameDistrict
         );
+
+      console.log(providers);
       res.status(200).json({
         infoDistrict: fullInfoDistrict,
         tariffs: tariffs,
