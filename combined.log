@@ -1,0 +1,14 @@
+{"level":"info","message":"Сервер запущен на порту 5010","timestamp":"2024-07-17T14:55:32.322Z"}
+{"level":"info","message":{"date":"2024-07-17T14:55:47.633Z","ip":"::1","method":"GET","response_time":"358.234 ms","status":"200","url":"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191"},"timestamp":"2024-07-17T14:55:47.633Z"}
+{"level":"info","message":"Сервер запущен на порту 5011","timestamp":"2024-07-17T14:56:38.382Z"}
+{"level":"info","message":{"date":"2024-07-17T14:56:43.562Z","ip":"::1","method":"GET","response_time":"344.570 ms","status":"200","url":"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191"},"timestamp":"2024-07-17T14:56:43.562Z"}
+{"level":"info","message":"Сервер запущен на порту 5012","timestamp":"2024-07-17T14:58:03.345Z"}
+{"level":"info","message":{"date":"2024-07-17T14:58:09.404Z","ip":"::1","method":"GET","response_time":"336.447 ms","status":"200","url":"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191"},"timestamp":"2024-07-17T14:58:09.404Z"}
+{"level":"info","message":"Сервер запущен на порту 5013","timestamp":"2024-07-17T15:01:06.202Z"}
+{"level":"info","message":"{\"ip\":\"::1\",\"date\":\"2024-07-17T15:01:17.642Z\",\"method\":\"GET\",\"url\":\"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191\",\"status\":\"200\",\"response_time\":\"382.582 ms\"}","timestamp":"2024-07-17T15:01:17.642Z"}
+{"level":"info","message":"Сервер запущен на порту 5014","timestamp":"2024-07-17T15:05:58.795Z"}
+{"level":"info","message":"{\"ip\":\"::1\",\"date\":\"2024-07-17T15:06:06.962Z\",\"method\":\"GET\",\"url\":\"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191\",\"status\":\"200\",\"response_time\":\"342.999 ms\"}","timestamp":"2024-07-17T15:06:06.962Z"}
+{"level":"info","message":"Сервер запущен на порту 5015","timestamp":"2024-07-17T15:10:38.027Z"}
+{"level":"info","message":"{\"ip\":\"::1\",\"date\":\"2024-07-17 20:10:44\",\"method\":\"GET\",\"url\":\"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191\",\"status\":\"200\",\"response_time\":\"310.392 ms\"}","timestamp":"2024-07-17T15:10:44.819Z"}
+{"level":"info","message":"{\"ip\":\"::1\",\"date\":\"2024-07-17 20:11:59\",\"method\":\"GET\",\"url\":\"/api/v1/tariffsAndProvidersOnAddressByHash/556b1776f538e9137d3faa7a6b744191ASDASD\",\"status\":\"200\",\"response_time\":\"46.098 ms\"}","timestamp":"2024-07-17T15:11:59.234Z"}
+{"level":"info","message":"{\"ip\":\"::1\",\"date\":\"2024-07-17 20:12:12\",\"method\":\"GET\",\"url\":\"/api/v1/tariffsAndProvidersdressByHash/556b1776f538e9137d3faa7a6b744191ASDASD\",\"status\":\"404\",\"response_time\":\"3.899 ms\"}","timestamp":"2024-07-17T15:12:12.939Z"}

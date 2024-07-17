@@ -37,7 +37,7 @@ class AggregatorService {
       }
 
       const dadataData = await dadataResponse.json();
-      console.log(dadataData);
+
       // Проверяем, получили ли мы корректные данные
       if (!dadataData || !dadataData.location || !dadataData.location.data) {
         throw new Error("Invalid data received from DaData");
@@ -47,7 +47,6 @@ class AggregatorService {
 
       return cityFiasId;
     } catch (error) {
-      console.error("Error:", error.message);
       return {
         error: "Failed to fetch data",
         details: error.message,
@@ -143,46 +142,41 @@ class AggregatorService {
       },
     };
   }
-  // Старые методы
-  // async getTariffsByDistrictId(id_district) {
-  //   return this.aggregatorModel.getTariffsByDistrictId(id_district);
-  // }
-  // async getProvidersByDistrictId(id_district) {
-  //   return this.aggregatorModel.getProvidersByDistrictId(id_district);
-  // }
-  // async getTariffsByHouse(id_house) {
-  //   return this.aggregatorModel.getTariffsByHouse(id_house);
-  // }
-  // async getProvidersByHouse(id_house) {
-  //   return this.aggregatorModel.getProvidersByHouse(id_house);
-  // }
-  // async getFullInfoByHouse(id_house) {
-  //   return this.aggregatorModel.getFullInfoByHouse(id_house);
-  // }
-  // async getDistrictName(id) {
-  //   return this.aggregatorModel.getDistrictName(id);
-  // }
-  // async getTariffsByEngName(engName) {
-  //   return this.aggregatorModel.getTariffsByEngName(engName);
-  // }
-  // async getProvidersByEngName(engName) {
-  //   return this.aggregatorModel.getProvidersByEngName(engName);
-  // }
-  // async getInfoDistrictByEngName(engName) {
-  //   return this.aggregatorModel.getInfoDistrictByEngName(engName);
-  // }
-  // async getCityName(id) {
-  //   return this.aggregatorModel.getCityName(id);
-  // }
-  // async getTariff(id) {
-  //   return this.aggregatorModel.getTariff(id);
-  // }
-  // async getTariffsByDistrictAndProvider(districtId, providerId) {
-  //   return this.aggregatorModel.getTariffsByDistrictAndProvider(
-  //     districtId,
-  //     providerId
-  //   );
-  // }
+  async getAllCitiesEndName() {
+    const cities = await this.aggregatorModel.getAllCitiesEndName();
+    const cityNames = cities.map((city) => city.engname);
+    return cityNames;
+  }
+  async getTariffsOnAddressByHash(hashAddress) {
+    const tariffs = await this.aggregatorModel.getTariffsOnAddress(hashAddress);
+    return tariffs;
+  }
+  async getTariffsAndProvidersOnAddressByHash(hashAddress) {
+    const tariffs = await this.aggregatorModel.getTariffsOnAddress(hashAddress);
+
+    const resultTariffs = tariffs.map((tariff) => {
+      const { provider_id, ...rest } = tariff;
+      return {
+        ...rest,
+        provider: {
+          id: provider_id,
+          name: this.providerNameById[provider_id],
+        },
+      };
+    });
+
+    const uniqueProviders = resultTariffs
+      .map((tariff) => tariff.provider)
+      .filter(
+        (provider, index, self) =>
+          index === self.findIndex((p) => p.id === provider.id)
+      );
+
+    return {
+      tariffs: resultTariffs,
+      providers: uniqueProviders,
+    };
+  }
 }
 
 export default AggregatorService;
