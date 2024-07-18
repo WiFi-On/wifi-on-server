@@ -9,6 +9,7 @@ import cors from "cors";
 import logger from "./config/logger.js";
 import morgan from "morgan";
 import { format } from "date-fns";
+import checkAPIKey from "./middleware/checkApiKey.js";
 
 const db = connectDB();
 
@@ -21,7 +22,7 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use(checkAPIKey);
 app.use(
   morgan(
     (tokens, req, res) => {
@@ -57,5 +58,5 @@ app.use((err, req, res, next) => {
   res.status(500).send("Что-то пошло не так!");
 });
 
-const port = process.env.PORT || 5015;
+const port = process.env.PORT || 5005;
 app.listen(port, () => logger.info(`Сервер запущен на порту ${port}`));
