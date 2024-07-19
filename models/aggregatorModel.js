@@ -26,7 +26,7 @@ class AggregatorModel {
     try {
       const infoDistrict = await db(this.districtsTable)
         .select("engname")
-        .where("fias_id", district_fias_id);
+        .where("id", district_fias_id);
       return infoDistrict;
     } catch (error) {
       throw new Error(error.message);

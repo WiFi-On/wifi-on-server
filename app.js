@@ -58,5 +58,5 @@ app.use((err, req, res, next) => {
   res.status(500).send("Что-то пошло не так!");
 });
 
-const port = process.env.PORT || 5005;
+const port = process.env.PORT || 5003;
 app.listen(port, () => logger.info(`Сервер запущен на порту ${port}`));

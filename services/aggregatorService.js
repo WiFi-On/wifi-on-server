@@ -85,8 +85,8 @@ class AggregatorService {
   async getIpAndCity(ip) {
     const ipFromData = await this.getIpFromData(ip);
     const cityData = await this.aggregatorModel.getIpAndCity(ipFromData);
-
-    return cityData;
+    const resultData = cityData[0].engname;
+    return resultData;
   }
 
   async getDistrictInfoByEngName(engName) {
