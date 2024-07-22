@@ -1,7 +1,11 @@
 //controllers/aggregatorController.js
+import archiver from "archiver";
+import fs from "fs";
+import path from "path";
 class AggregatorController {
-  constructor(aggregatorService) {
+  constructor(aggregatorService, excelTcService) {
     this.aggregatorService = aggregatorService;
+    this.excelTcService = excelTcService;
   }
 
   // Контроллер получения провайдеров по адресу
@@ -104,6 +108,21 @@ class AggregatorController {
       res.status(200).json(tariffsAndProviders);
     } catch (error) {
       res.status(500).json({ error: error.message });
+    }
+  };
+  uploadExcel = async (req, res) => {
+    // Проверяем, что файл загружен
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded." });
+    }
+
+    try {
+      const archiveBuffer = await this.excelTcService.excelTc(req.file.path);
+      res.setHeader("Content-Disposition", "attachment; filename=archive.zip");
+      res.setHeader("Content-Type", "application/zip");
+      res.send(archiveBuffer);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   };
 }

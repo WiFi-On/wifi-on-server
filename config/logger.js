@@ -3,13 +3,17 @@ import { format } from "date-fns";
 
 const consoleFormat = winston.format.combine(
   winston.format.colorize(),
-  winston.format.printf(({ level, message, timestamp }) => {
+  winston.format.printf(({ level, message, timestamp, stack }) => {
     let logMessage = message;
-    try {
-      const parsedMessage = JSON.parse(message);
-      logMessage = JSON.stringify(parsedMessage, null, 2);
-    } catch (error) {
-      // message is not a valid JSON
+    if (stack) {
+      logMessage += `\n${stack}`;
+    } else {
+      try {
+        const parsedMessage = JSON.parse(message);
+        logMessage = JSON.stringify(parsedMessage, null, 2);
+      } catch (error) {
+        // message is not a valid JSON
+      }
     }
     const formattedTimestamp = format(
       new Date(timestamp),

@@ -11,12 +11,10 @@ class AggregatorService {
       3: "МегаФон",
     };
   }
-
   async hashAddress(address) {
     const hash = crypto.createHash("md5").update(address).digest("hex");
     return hash;
   }
-
   async getIpFromData(ip) {
     try {
       const dadataResponse = await fetch(
@@ -53,7 +51,6 @@ class AggregatorService {
       };
     }
   }
-
   async getProvidersOnAddress(address) {
     const hashAddress = await this.hashAddress(address);
     const providers = await this.aggregatorModel.getProvidersOnAddress(
@@ -65,7 +62,6 @@ class AggregatorService {
     }));
     return resultProviders;
   }
-
   async getTariffsOnAddress(address) {
     const hashAddress = await this.hashAddress(address);
     const tariffs = await this.aggregatorModel.getTariffsOnAddress(hashAddress);
@@ -81,14 +77,12 @@ class AggregatorService {
     });
     return resultTariffs;
   }
-
   async getIpAndCity(ip) {
     const ipFromData = await this.getIpFromData(ip);
     const cityData = await this.aggregatorModel.getIpAndCity(ipFromData);
     const resultData = cityData[0].engname;
     return resultData;
   }
-
   async getDistrictInfoByEngName(engName) {
     const districtData = await this.aggregatorModel.getDistrictInfoByEngName(
       engName
@@ -96,7 +90,6 @@ class AggregatorService {
     const resultDistrictData = districtData[0];
     return resultDistrictData;
   }
-
   async getTariffsByDistrictEngName(engName) {
     const fiasDistrictId =
       await this.aggregatorModel.getDistrictFiasIdByEngName(engName);
@@ -116,7 +109,6 @@ class AggregatorService {
     });
     return resultTariffs;
   }
-
   async getProvidersByDistrictEngName(engName) {
     const fiasDistrictId =
       await this.aggregatorModel.getDistrictFiasIdByEngName(engName);
@@ -130,7 +122,6 @@ class AggregatorService {
     }));
     return resultProviders;
   }
-
   async getTariff(id) {
     const [tariff] = await this.aggregatorModel.getTariff(id);
     const { provider_id, ...rest } = tariff;

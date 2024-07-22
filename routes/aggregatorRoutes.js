@@ -1,10 +1,9 @@
-//routes/aggregatorRoutes.js
 import express from "express";
 
-const createRouter = (aggregatorController) => {
+const createRouter = (aggregatorController, upload) => {
   const router = express.Router();
 
-  // Получение провайдеров по адресу
+  // Получение провайдеров по адресу
   router.get(
     "/providersOnAddress/:address",
     aggregatorController.getProvidersOnAddress
@@ -40,6 +39,12 @@ const createRouter = (aggregatorController) => {
   router.get("/tariff/:id", aggregatorController.getTariff);
   // Получение всех населенных пунктов на английском
   router.get("/allCitiesEngName", aggregatorController.getAllCitiesEngName);
+  // Маршрут для загрузки Excel файла
+  router.post(
+    "/excelTc",
+    upload.single("excelFile"),
+    aggregatorController.uploadExcel
+  );
 
   return router;
 };
