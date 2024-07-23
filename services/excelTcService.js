@@ -1,9 +1,8 @@
-import fs from "fs";
 import path from "path";
 import xlsx from "xlsx";
 import archiver from "archiver";
 import { fileURLToPath } from "url";
-import { Readable } from "stream";
+import crypto from "crypto";
 
 class ExcelTcService {
   constructor(aggregatorModel) {
@@ -13,10 +12,15 @@ class ExcelTcService {
       1: "Русская компания",
       2: "МТС",
       3: "МегаФон",
+      4: "ТТК",
+      5: "Алматель",
     };
     this.__dirname = path.dirname(fileURLToPath(import.meta.url));
   }
-
+  async hashAddress(address) {
+    const hash = crypto.createHash("md5").update(address).digest("hex");
+    return hash;
+  }
   async addressCheck(address) {
     const apiKey = "bbbdb08051ba3df93014d80a721660db6c19f0db";
     try {
@@ -46,43 +50,22 @@ class ExcelTcService {
       return false;
     }
   }
-
   async tcCheck(address) {
-    try {
-      const response = await fetch(
-        `http://92.63.178.153:5003/api/v1/providersOnAddress/${address}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "x-api-key": "g2H3Ym90U3nmhStLikyWOLM662xaiG6BK3l41pYq",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-
-      const data = await response.json();
-
-      if (!data || !data.providers || data.providers.length === 0) {
-        throw new Error("No providers found");
-      }
-
-      return data.providers;
-    } catch (error) {
-      return null;
-    }
+    const hashAddress = await this.hashAddress(address);
+    const providers = await this.aggregatorModel.getProvidersOnAddress(
+      hashAddress
+    );
+    const resultProviders = providers.map((provider) => ({
+      id: provider.provider_id,
+      name: this.providerNameById[provider.provider_id],
+    }));
+    return resultProviders;
   }
-
   delflat(address) {
     const arrAddress = address.split(",");
     arrAddress.pop();
     return arrAddress.join(",").trim();
   }
-
   addHousing(address) {
     const arrAddress = address.split(",");
     let lastElement = arrAddress[arrAddress.length - 1];
@@ -95,7 +78,6 @@ class ExcelTcService {
 
     return arrAddress.join(",");
   }
-
   async excelTc(path_to_file) {
     const inputExcel = xlsx.readFile(path_to_file);
     const sheet = inputExcel.Sheets[inputExcel.SheetNames[0]];
@@ -138,10 +120,8 @@ class ExcelTcService {
     numbers = numbers.slice(1);
 
     for (let i = 0; i < addresses.length; i++) {
-      console.log(i);
-
       const value = await this.addressCheck(addresses[i]);
-      console.log(value);
+
       if (!value) {
         TC.push("Dadata не нашла");
         continue;
@@ -151,10 +131,8 @@ class ExcelTcService {
       let providersIds;
       if (!providers) {
         TC.push("Провaдеров нет");
-        console.log("Провaдеров нет");
       } else {
         providersIds = providers.map((provider) => provider.id);
-        console.log(providersIds);
         TC.push(providersIds.join(", "));
       }
     }
@@ -174,6 +152,8 @@ class ExcelTcService {
     const worksheetDataMts = [["Номер"]];
     const worksheetDataMegafon = [["Номер"]];
     const worksheetDataRusCom = [["Номер"]];
+    const worksheetDataTTK = [["Номер"]];
+    const worksheetDataAlmatel = [["Номер"]];
     const worksheetDataNoCN = [
       ["Адрес", "Номер", "Техническая возможность(Провайдеры)"],
     ];
@@ -181,29 +161,31 @@ class ExcelTcService {
     try {
       for (let i = 0; i < addresses.length; i++) {
         worksheetData.push([addresses[i], numbers[i], TC[i]]);
-        console.log(addresses[i], numbers[i], TC[i]);
+
         if (TC[i].includes("2")) {
           worksheetDataMts.push([numbers[i]]);
+        } else if (TC[i].includes("4")) {
+          worksheetDataTTK.push([numbers[i]]);
         } else if (TC[i].includes("3")) {
           worksheetDataMegafon.push([numbers[i]]);
         } else if (TC[i].includes("1")) {
           worksheetDataRusCom.push([numbers[i]]);
+        } else if (TC[i].includes("5")) {
+          worksheetDataAlmatel.push([numbers[i]]);
         } else {
           worksheetDataNoCN.push([addresses[i], numbers[i], TC[i]]);
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
-
-    console.log("кайф");
+    } catch (error) {}
 
     // Генерация буферов Excel-файлов
     const buffers = {
       output: writeBuffer(worksheetData),
       outputMts: writeBuffer(worksheetDataMts),
       outputMegafon: writeBuffer(worksheetDataMegafon),
+      outputTTK: writeBuffer(worksheetDataTTK),
       outputRusCom: writeBuffer(worksheetDataRusCom),
+      outputAlmatel: writeBuffer(worksheetDataAlmatel),
       outputNoCN: writeBuffer(worksheetDataNoCN),
     };
 
@@ -222,7 +204,9 @@ class ExcelTcService {
     archive.append(buffers.output, { name: "output.xlsx" });
     archive.append(buffers.outputMts, { name: "outputMts.xlsx" });
     archive.append(buffers.outputMegafon, { name: "outputMegafon.xlsx" });
+    archive.append(buffers.outputTTK, { name: "outputTTK.xlsx" });
     archive.append(buffers.outputRusCom, { name: "outputRusCom.xlsx" });
+    archive.append(buffers.outputAlmatel, { name: "outputAlmatel.xlsx" });
     archive.append(buffers.outputNoCN, { name: "outputNoCN.xlsx" });
 
     await archive.finalize();

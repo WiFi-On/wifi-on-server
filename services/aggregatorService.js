@@ -9,6 +9,8 @@ class AggregatorService {
       1: "Русская компания",
       2: "МТС",
       3: "МегаФон",
+      4: "ТТК",
+      5: "Алматель",
     };
   }
   async hashAddress(address) {

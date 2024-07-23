@@ -8,7 +8,6 @@ import AggregatorController from "./controllers/aggregatorController.js";
 import aggregatorRoutes from "./routes/aggregatorRoutes.js";
 import cors from "cors";
 import logger from "./config/logger.js";
-import morgan from "morgan";
 import { format } from "date-fns";
 import checkAPIKey from "./middleware/checkApiKey.js";
 import multer from "multer";
