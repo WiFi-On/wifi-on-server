@@ -25,6 +25,11 @@ const createRouter = (aggregatorController, upload) => {
   );
   // Получение информации населенного пункта по ip
   router.get("/ipAndCity", aggregatorController.getIpAndCity);
+  // Получение названия английского населенного пункта по fiasID
+  router.get(
+    "/engNameDistrictByFiasId/:fiasId",
+    aggregatorController.getEngNameDistrictByFiasId
+  );
   // Получение информации о населенном пункте, тарифов и провайдеров по английскому названию населенного пункта
   router.get(
     "/fullInfoDistrictByEndName/:engNameDistrict",

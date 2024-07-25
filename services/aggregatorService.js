@@ -170,6 +170,12 @@ class AggregatorService {
       providers: uniqueProviders,
     };
   }
+  async getEngNameDistrictByFiasId(fiasId) {
+    const engName = await this.aggregatorModel.getEngNameDistrictByFiasId(
+      fiasId
+    );
+    return engName;
+  }
 }
 
 export default AggregatorService;

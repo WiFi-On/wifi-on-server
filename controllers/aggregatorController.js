@@ -125,5 +125,16 @@ class AggregatorController {
       res.status(500).json({ message: error.message });
     }
   };
+  getEngNameDistrictByFiasId = async (req, res) => {
+    try {
+      const engNameDistrict =
+        await this.aggregatorService.getEngNameDistrictByFiasId(
+          req.params.fiasId
+        );
+      res.status(200).json({ engNameDistrict: engNameDistrict });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
 export default AggregatorController;

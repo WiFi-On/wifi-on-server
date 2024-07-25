@@ -141,6 +141,17 @@ class AggregatorModel {
       throw new Error(error.message);
     }
   }
+
+  async getEngNameDistrictByFiasId(fiasIdDistrict) {
+    try {
+      const engName = await db(this.districtsTable)
+        .select("*")
+        .where("id", fiasIdDistrict);
+      return engName;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default AggregatorModel;
