@@ -174,7 +174,8 @@ class AggregatorService {
     const engName = await this.aggregatorModel.getEngNameDistrictByFiasId(
       fiasId
     );
-    return engName;
+    const result = engName[0].engname;
+    return result;
   }
 }
 
