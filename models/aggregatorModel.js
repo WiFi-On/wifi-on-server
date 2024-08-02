@@ -152,6 +152,17 @@ class AggregatorModel {
       throw new Error(error.message);
     }
   }
+
+  async getTariffsAvatell() {
+    try {
+      const tariffs = await db(this.tariffsTable)
+        .select("*")
+        .where("district_id", "-");
+      return tariffs;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default AggregatorModel;
