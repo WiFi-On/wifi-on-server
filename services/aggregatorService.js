@@ -129,6 +129,13 @@ class AggregatorService {
     }));
     return resultProviders;
   }
+  async getDistrictInfoByEngName(engName) {
+    const districtData = await this.aggregatorModel.getDistrictInfoByEngName(
+      engName
+    );
+    const resultDistrictData = districtData[0];
+    return resultDistrictData;
+  }
   async getTariff(id) {
     const [tariff] = await this.aggregatorModel.getTariff(id);
     const { provider_id, ...rest } = tariff;

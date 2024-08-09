@@ -23,6 +23,10 @@ const createRouter = (aggregatorController, upload) => {
     "/tariffsAndProvidersOnAddressByHash/:hashAddress",
     aggregatorController.getTariffsAndProvidersOnAddressByHash
   );
+  router.get(
+    "/infoDistrictByEngName/:engName",
+    aggregatorController.getDistrictInfoByEngName
+  );
   // Получение информации населенного пункта по ip
   router.get("/ipAndCity", aggregatorController.getIpAndCity);
   // Получение названия английского населенного пункта по fiasID

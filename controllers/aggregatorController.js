@@ -71,6 +71,17 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
+  getDistrictInfoByEngName = async (req, res) => {
+    try {
+      const districtInfo =
+        await this.aggregatorService.getDistrictInfoByEngName(
+          req.params.engName
+        );
+      res.status(200).json({ districtInfo: districtInfo });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
   getAllCitiesEngName = async (req, res) => {
     try {
       const cities = await this.aggregatorService.getAllCitiesEndName();
