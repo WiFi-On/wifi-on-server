@@ -23,6 +23,11 @@ const createRouter = (aggregatorController, upload) => {
     "/tariffsAndProvidersOnAddressByHash/:hashAddress",
     aggregatorController.getTariffsAndProvidersOnAddressByHash
   );
+  // Получение тарифов и провайдеров по адресу
+  router.get(
+    "/tariffsAndProvidersOnAddressByAddress/:address",
+    aggregatorController.getTariffsAndProvidersOnAddressByAddress
+  );
   router.get(
     "/infoDistrictByEngName/:engName",
     aggregatorController.getDistrictInfoByEngName

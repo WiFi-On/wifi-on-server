@@ -121,12 +121,22 @@ class AggregatorController {
       res.status(500).json({ error: error.message });
     }
   };
+  getTariffsAndProvidersOnAddressByAddress = async (req, res) => {
+    try {
+      const tariffsAndProviders =
+        await this.aggregatorService.getTariffsAndProvidersOnAddressByHash(
+          req.params.address
+        );
+      res.status(200).json(tariffsAndProviders);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
   uploadExcel = async (req, res) => {
     // Проверяем, что файл загружен
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded." });
     }
-
     try {
       const archiveBuffer = await this.excelTcService.excelTc(req.file.path);
       res.setHeader("Content-Disposition", "attachment; filename=archive.zip");

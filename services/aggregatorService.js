@@ -14,6 +14,7 @@ class AggregatorService {
       6: "Avatell",
       7: "Билайн",
       8: "Дом.ру",
+      9: "Cибсети",
     };
   }
   async hashAddress(address) {
@@ -157,6 +158,37 @@ class AggregatorService {
     return tariffs;
   }
   async getTariffsAndProvidersOnAddressByHash(hashAddress) {
+    let tariffs = await this.aggregatorModel.getTariffsOnAddress(hashAddress);
+    const tariffsAvatell = await this.aggregatorModel.getTariffsAvatell();
+
+    tariffs = [...tariffs, ...tariffsAvatell];
+    console.log(tariffs);
+
+    const resultTariffs = tariffs.map((tariff) => {
+      const { provider_id, ...rest } = tariff;
+      return {
+        ...rest,
+        provider: {
+          id: provider_id,
+          name: this.providerNameById[provider_id],
+        },
+      };
+    });
+
+    const uniqueProviders = resultTariffs
+      .map((tariff) => tariff.provider)
+      .filter(
+        (provider, index, self) =>
+          index === self.findIndex((p) => p.id === provider.id)
+      );
+
+    return {
+      tariffs: resultTariffs,
+      providers: uniqueProviders,
+    };
+  }
+  async getTariffsAndProvidersOnAddressByAddress(address) {
+    const hashAddress = await this.hashAddress(address);
     let tariffs = await this.aggregatorModel.getTariffsOnAddress(hashAddress);
     const tariffsAvatell = await this.aggregatorModel.getTariffsAvatell();
 
